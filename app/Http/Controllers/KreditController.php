@@ -18,30 +18,51 @@ class KreditController extends Controller
         $jumlahPinjaman = $request->jumlah_pinjaman;
         $bungaPerTahun = $request->bunga;
         $jangkaWaktu = $request->jangka_waktu;
+        $jenisAngsuran = $request->jenis_angsuran;
     
         // Konversi data
         $bungaBulanan = ($bungaPerTahun / 100) / 12; // r
         $jangkaWaktuBulan = $jangkaWaktu * 12; // n
     
-        // Hitung angsuran tetap (A)
-        $angsuranTetap = $jumlahPinjaman * ($bungaBulanan * pow(1 + $bungaBulanan, $jangkaWaktuBulan)) / (pow(1 + $bungaBulanan, $jangkaWaktuBulan) - 1);
-    
         $hasil = [];
         $sisaPinjaman = $jumlahPinjaman;
     
-        for ($i = 1; $i <= $jangkaWaktuBulan; $i++) {
-            $bunga = $sisaPinjaman * $bungaBulanan; // Bunga bulan ini
-            $angsuranPokok = $angsuranTetap - $bunga; // Angsuran pokok bulan ini
-            $sisaPinjaman -= $angsuranPokok; // Kurangi sisa pinjaman
+        if ($jenisAngsuran === 'tetap') {
+            // Hitung angsuran tetap (Anuitas)
+            $angsuranTetap = $jumlahPinjaman * ($bungaBulanan * pow(1 + $bungaBulanan, $jangkaWaktuBulan)) / (pow(1 + $bungaBulanan, $jangkaWaktuBulan) - 1);
     
-            $hasil[] = [
-                'bulan' => $i,
-                'angsuran_pokok' => $angsuranPokok,
-                'bunga' => $bunga,
-                'total_angsuran' => $angsuranTetap,
-                'sisa_pinjaman' => max($sisaPinjaman, 0), // Pastikan tidak negatif
-            ];
+            for ($i = 1; $i <= $jangkaWaktuBulan; $i++) {
+                $bunga = $sisaPinjaman * $bungaBulanan; // Bunga bulan ini
+                $angsuranPokok = $angsuranTetap - $bunga; // Angsuran pokok bulan ini
+                $sisaPinjaman -= $angsuranPokok; // Kurangi sisa pinjaman
+    
+                $hasil[] = [
+                    'bulan' => $i,
+                    'angsuran_pokok' => $angsuranPokok,
+                    'bunga' => $bunga,
+                    'total_angsuran' => $angsuranTetap,
+                    'sisa_pinjaman' => max($sisaPinjaman, 0),
+                ];
+            }
+        } else {
+            // Hitung angsuran menurun
+            $angsuranPokok = $jumlahPinjaman / $jangkaWaktuBulan;
+    
+            for ($i = 1; $i <= $jangkaWaktuBulan; $i++) {
+                $bunga = $sisaPinjaman * $bungaBulanan; // Bunga bulan ini
+                $totalAngsuran = $angsuranPokok + $bunga;
+                $sisaPinjaman -= $angsuranPokok;
+    
+                $hasil[] = [
+                    'bulan' => $i,
+                    'angsuran_pokok' => $angsuranPokok,
+                    'bunga' => $bunga,
+                    'total_angsuran' => $totalAngsuran,
+                    'sisa_pinjaman' => max($sisaPinjaman, 0),
+                ];
+            }
         }
+    
     
         return view('simulasi-kredit', ['hasil' => $hasil]);
     }

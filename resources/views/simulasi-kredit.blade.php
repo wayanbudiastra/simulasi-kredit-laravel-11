@@ -23,6 +23,24 @@
             <label for="jangka_waktu" class="form-label">Jangka Waktu (Tahun)</label>
             <input type="number" class="form-control" id="jangka_waktu" name="jangka_waktu" required>
         </div>
+        <div class="mb-3">
+            <label class="form-label">Jenis Angsuran</label>
+            <div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="jenis_angsuran" id="angsuran_tetap" value="tetap" checked>
+                    <label class="form-check-label" for="angsuran_tetap">
+                        Angsuran Tetap (Anuitas)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="jenis_angsuran" id="angsuran_tidak_tetap" value="tidak_tetap">
+                    <label class="form-check-label" for="angsuran_tidak_tetap">
+                        Angsuran Tidak Tetap (Menurun)
+                    </label>
+                </div>
+            </div>
+        </div>
+        
         <button type="submit" class="btn btn-primary">Hitung</button>
     </form>
 
