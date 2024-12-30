@@ -17,7 +17,7 @@
         </div>
         <div class="mb-3">
             <label for="bunga" class="form-label">Bunga Per Tahun (%)</label>
-            <input type="number" class="form-control" id="bunga" name="bunga" required>
+            <input type="number" class="form-control" id="bunga" name="bunga" step="0.01" required>
         </div>
         <div class="mb-3">
             <label for="jangka_waktu" class="form-label">Jangka Waktu (Tahun)</label>
@@ -60,12 +60,20 @@
                 @foreach($hasil as $data)
                     <tr>
                         <td>{{ $data['bulan'] }}</td>
-                        <td>Rp {{ number_format($data['angsuran_pokok'], 2, ',', '.') }}</td>
-                        <td>Rp {{ number_format($data['bunga'], 2, ',', '.') }}</td>
-                        <td>Rp {{ number_format($data['total_angsuran'], 2, ',', '.') }}</td>
-                        <td>Rp {{ number_format($data['sisa_pinjaman'], 2, ',', '.') }}</td>
+                        <td>Rp {{ number_format($data['angsuran_pokok'], 0, ',', '.') }}</td>
+                        <td>Rp {{ number_format($data['bunga'], 0, ',', '.') }}</td>
+                        <td>Rp {{ number_format($data['total_angsuran'], 0, ',', '.') }}</td>
+                        <td>Rp {{ number_format($data['sisa_pinjaman'], 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
+
+                <tr>
+                    <td></td>
+                    <td>Total Bunga</td>
+                    <td>Rp {{ number_format($total_bunga, 0, ',', '.') }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
     @endif

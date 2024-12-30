@@ -19,7 +19,8 @@ class KreditController extends Controller
         $bungaPerTahun = $request->bunga;
         $jangkaWaktu = $request->jangka_waktu;
         $jenisAngsuran = $request->jenis_angsuran;
-    
+    $totalBunga=0;
+    $totalbayar=0;
         // Konversi data
         $bungaBulanan = ($bungaPerTahun / 100) / 12; // r
         $jangkaWaktuBulan = $jangkaWaktu * 12; // n
@@ -35,7 +36,8 @@ class KreditController extends Controller
                 $bunga = $sisaPinjaman * $bungaBulanan; // Bunga bulan ini
                 $angsuranPokok = $angsuranTetap - $bunga; // Angsuran pokok bulan ini
                 $sisaPinjaman -= $angsuranPokok; // Kurangi sisa pinjaman
-    
+                $totalBunga = $totalBunga + $bunga;
+
                 $hasil[] = [
                     'bulan' => $i,
                     'angsuran_pokok' => $angsuranPokok,
@@ -52,6 +54,7 @@ class KreditController extends Controller
                 $bunga = $sisaPinjaman * $bungaBulanan; // Bunga bulan ini
                 $totalAngsuran = $angsuranPokok + $bunga;
                 $sisaPinjaman -= $angsuranPokok;
+                $totalBunga = $totalBunga+$bunga;
     
                 $hasil[] = [
                     'bulan' => $i,
@@ -64,6 +67,6 @@ class KreditController extends Controller
         }
     
     
-        return view('simulasi-kredit', ['hasil' => $hasil]);
+        return view('simulasi-kredit', ['hasil' => $hasil, 'total_bunga'=> $totalBunga]);
     }
 }
